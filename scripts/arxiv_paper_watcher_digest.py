@@ -356,8 +356,8 @@ def process_papers(
 
 def save_report(rows, start_time, end_time):
     date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    csv_path = REPORT_DIR / f"arxiv_legal_ai_{date}.csv"
-    md_path = REPORT_DIR / f"arxiv_legal_ai_{date}.md"
+    csv_path = REPORT_DIR / f"arxiv_digest_{date}.csv"
+    md_path = REPORT_DIR / f"arxiv_digest_{date}.md"
 
     df = pd.DataFrame(rows)
     df.to_csv(csv_path, index=False)
