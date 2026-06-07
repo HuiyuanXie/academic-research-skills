@@ -1,0 +1,39 @@
+profile_name: "Research Paper Watcher"
+
+default_categories:
+  - cs.CL
+  - cs.AI
+  - cs.IR
+  - cs.LG
+  - cs.CY
+  - stat.ML
+
+topics:
+  - id: legal_ai
+    name: "Legal AI and Legal NLP"
+    description: >
+      Papers about applying AI, NLP, LLMs, retrieval, reasoning, or agents to legal tasks.
+    seed_keywords:
+      - legal AI
+      - legal NLP
+      - AI and law
+      - computational law
+      - legal reasoning
+      - legal datasets and benchmarks
+    include:
+      - legal reasoning
+      - reinforcement learning for legal tasks
+      - legal datasets or benchmarks
+      - legal information extraction
+      - legal agents or multi-agent systems for legal tasks
+      - court debate simulation
+      - legal argument mining
+      - similar case retrieval
+      - precedent analysis
+      - issue analysis or dispute focus analysis
+      - regulation, compliance, or governance using AI
+      - LLMs applied to legal tasks
+    exclude:
+      - physical law
+      - scientific laws
+      - generic AI papers without legal application
