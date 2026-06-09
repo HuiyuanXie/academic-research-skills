@@ -1,19 +1,70 @@
 # Academic Research Skills
 
-A small Codex-ready research automation repo for monitoring arXiv, filtering papers against configurable research interests, and generating Markdown/CSV digests with model-written relevance judgments and summaries.
+A small Codex-ready repository of academic research skills.
 
-The current workflow is an **arXiv Research Paper Watcher**. It was originally focused on Legal AI / Legal NLP, but the latest version is topic-configurable through `config/topics.yaml`.
+At the moment, the repo contains two local Codex skills:
 
-## What It Does
+- `arxiv-paper-watcher-digest`: monitors arXiv for configurable research topics and generates Markdown/CSV digests
+- `notes-to-paper-section`: reads large research notes, critiques their technical and logical quality, and drafts an ACL-style paper section
 
-- Reads research topics, seed keywords, inclusion criteria, exclusion criteria, and arXiv categories from `config/topics.yaml`.
-- Uses an OpenAI-compatible model to expand seed keywords into higher-recall arXiv search terms.
-- Caches expanded keywords in `state/expanded_keywords.json` and regenerates them when the topic config changes.
-- Queries arXiv for newly submitted papers after the last successful run.
-- Filters papers for substantive relevance against the configured topics.
-- Summarizes relevant papers in 3-5 concise sentences.
-- Saves digest reports as both Markdown and CSV under `reports/`.
-- Tracks processed papers in `state/seen_papers.json` to avoid reprocessing.
+The repo is meant to be practical rather than framework-heavy: each skill lives under `.codex/skills/`, and supporting scripts or configuration live alongside it in the repository.
+
+## Skills Included
+
+### 1. arXiv Paper Watcher and Digest
+
+Skill file:
+
+```text
+.codex/skills/arxiv-paper-watcher-digest/SKILL.md
+```
+
+Supporting script:
+
+```text
+scripts/arxiv_paper_watcher_digest.py
+```
+
+What it does:
+
+- reads research topics from `config/topics.yaml`
+- expands seed keywords with an OpenAI-compatible model
+- queries arXiv for newly submitted papers
+- filters papers for substantive relevance against configured topics
+- summarizes relevant papers
+- writes Markdown and CSV reports under `reports/`
+- tracks state under `state/`
+
+Typical Codex prompt:
+
+```text
+Run the arXiv Watcher and Digest skill.
+```
+
+### 2. Notes to Paper Section
+
+Skill files:
+
+```text
+.codex/skills/notes-to-paper-section/SKILL.md
+.codex/skills/notes-to-paper-section/references/acl-style.md
+.codex/skills/notes-to-paper-section/references/critique-checklist.md
+```
+
+What it does:
+
+- reads large research notes, including multilingual notes
+- builds an internal map of claims, assumptions, evidence, and open gaps
+- critiques technical correctness and logical soundness
+- identifies mistakes, unsupported claims, and missing information
+- suggests improvements before drafting
+- writes an ACL-style academic paper section grounded in the notes
+
+Typical Codex prompt:
+
+```text
+Use the notes-to-paper-section skill on /absolute/path/to/notes.md. First critique the notes, then draft an ACL-style Method section.
+```
 
 ## Repository Layout
 
@@ -21,18 +72,19 @@ The current workflow is an **arXiv Research Paper Watcher**. It was originally f
 .
 ├── .codex/
 │   └── skills/
-│       └── arxiv_paper_watcher_digest/
-│           └── SKILL.md
+│       ├── arxiv-paper-watcher-digest/
+│       │   └── SKILL.md
+│       └── notes-to-paper-section/
+│           ├── SKILL.md
+│           └── references/
+│               ├── acl-style.md
+│               └── critique-checklist.md
 ├── config/
 │   └── topics.yaml
 ├── reports/
-│   └── arxiv_digest_*.md / *.csv
 ├── scripts/
 │   └── arxiv_paper_watcher_digest.py
 ├── state/
-│   ├── expanded_keywords.json
-│   ├── last_run.json
-│   └── seen_papers.json
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -40,9 +92,11 @@ The current workflow is an **arXiv Research Paper Watcher**. It was originally f
 
 ## Requirements
 
+For the repository as it exists today:
+
 - Python 3.11 or newer recommended
-- An OpenAI API key available through `.env`
-- Network access to:
+- an OpenAI API key available through `.env`
+- network access to:
   - arXiv API
   - OpenAI Responses API
 
@@ -60,7 +114,9 @@ OPENAI_API_KEY=your_api_key_here
 
 `.env` is ignored by Git and should not be committed.
 
-## Configuration
+## arXiv Watcher Setup
+
+The arXiv watcher is the only current skill in this repo that requires a Python runtime and external APIs.
 
 Research interests live in `config/topics.yaml`.
 
@@ -104,16 +160,16 @@ topics:
 
 Each topic supports:
 
-- `id`: stable machine-readable identifier.
-- `name`: display name used in reports.
-- `description`: short description of the topic.
-- `seed_keywords`: initial search terms.
-- `include`: concepts that should count as relevant.
-- `exclude`: false-positive patterns or adjacent areas to filter out.
+- `id`: stable machine-readable identifier
+- `name`: display name used in reports
+- `description`: short description of the topic
+- `seed_keywords`: initial search terms
+- `include`: concepts that should count as relevant
+- `exclude`: false-positive patterns or adjacent areas to filter out
 
 `default_categories` controls which arXiv categories are searched.
 
-## Running the Digest
+## Running the arXiv Watcher Script
 
 Run:
 
@@ -135,73 +191,52 @@ Expanded keywords: state/expanded_keywords.json
 
 The script updates `state/last_run.json` only after the workflow completes.
 
-## Codex Skill
-
-This repository includes a local Codex skill at:
-
-```text
-.codex/skills/arxiv-paper-watcher-digest/SKILL.md
-```
-
-The skill describes the intended on-demand workflow:
-
-1. Install dependencies if missing.
-2. Confirm `OPENAI_API_KEY` is configured without printing it.
-3. Read the last-run state.
-4. Query arXiv.
-5. Filter, summarize, and save a digest.
-6. Update state after successful completion.
-
-In Codex, you can ask:
-
-```text
-Run the arXiv Watcher and Digest skill.
-```
-
 ## State and Generated Files
 
-The script creates and updates:
+The arXiv watcher creates and updates:
 
-- `state/last_run.json`: timestamp of the last successful run.
-- `state/seen_papers.json`: arXiv IDs already processed.
-- `state/expanded_keywords.json`: cached model-expanded keywords for the current topic config.
-- `reports/*.md`: human-readable digest reports.
-- `reports/*.csv`: tabular report exports.
+- `state/last_run.json`: timestamp of the last successful run
+- `state/seen_papers.json`: arXiv IDs already processed
+- `state/expanded_keywords.json`: cached model-expanded keywords for the current topic config
+- `reports/*.md`: human-readable digest reports
+- `reports/*.csv`: tabular report exports
 
 If `config/topics.yaml` changes, the topic hash changes and expanded keywords are regenerated.
 
 For a fresh run from scratch, remove or edit the files under `state/`. Be careful: deleting state may cause old papers to be processed again.
 
-## Output Format
+## Notes-to-Paper Workflow
 
-Markdown reports are grouped by matched topic and include:
+The `notes-to-paper-section` skill is prompt-and-reference driven. It does not currently depend on a dedicated Python script in this repo.
 
-- paper title
-- authors
-- publication timestamp
-- arXiv ID and link
-- arXiv categories
-- matched topic names
-- relevance score
-- relevance reason
-- abstract
-- model-generated summary
+Its workflow is:
 
-CSV reports contain the same structured metadata for spreadsheet analysis.
+1. read the notes fully
+2. build an internal map of claims, assumptions, evidence, definitions, and open gaps
+3. critique technical correctness and logical soundness
+4. report mistakes, ambiguities, and missing information
+5. draft an ACL-style section using the bundled references
 
-## Model Behavior
+The main skill file explicitly routes Codex to:
 
-The script currently uses:
+- `references/critique-checklist.md` before critique
+- `references/acl-style.md` before drafting
+
+This separation keeps the critique pass and the writing pass distinct, which is important for note-to-paper conversion.
+
+## Model Usage
+
+The arXiv watcher currently uses:
 
 ```python
 MODEL_NAME = "gpt-5.2"
 client = OpenAI()
 ```
 
-The model is used for three stages:
+It uses the model for:
 
-1. Expanding topic keywords.
-2. Filtering papers against topic criteria.
-3. Summarizing relevant papers.
+1. keyword expansion
+2. topic-aware relevance filtering
+3. paper summarization
 
-To use a different OpenAI-compatible endpoint or model, update the OpenAI client initialization and `MODEL_NAME` in `scripts/arxiv_paper_watcher_digest.py`.
+To use a different OpenAI-compatible endpoint or model, update the OpenAI client initialization and `MODEL_NAME` in scripts/arxiv_paper_watcher_digest.py.
