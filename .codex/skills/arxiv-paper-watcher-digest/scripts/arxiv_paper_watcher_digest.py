@@ -10,11 +10,22 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import yaml
 
-load_dotenv()
+SCRIPT_PATH = Path(__file__).resolve()
 
-REPORT_DIR = Path("reports")
-CONFIG_DIR = Path("config")
-STATE_DIR = Path("state")
+
+def find_repo_root() -> Path:
+    for parent in SCRIPT_PATH.parents:
+        if (parent / ".codex").exists() and (parent / "config").exists():
+            return parent
+    raise RuntimeError("Could not locate repository root from script path.")
+
+
+REPO_ROOT = find_repo_root()
+load_dotenv(REPO_ROOT / ".env")
+
+REPORT_DIR = REPO_ROOT / "reports"
+CONFIG_DIR = REPO_ROOT / "config"
+STATE_DIR = REPO_ROOT / "state"
 TOPICS_PATH = CONFIG_DIR / "topics.yaml"
 EXPANDED_KEYWORDS_PATH = STATE_DIR / "expanded_keywords.json"
 LAST_RUN_PATH = STATE_DIR / "last_run.json"

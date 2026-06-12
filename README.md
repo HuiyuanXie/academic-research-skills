@@ -23,7 +23,7 @@ Skill file:
 Supporting script:
 
 ```text
-scripts/arxiv_paper_watcher_digest.py
+.codex/skills/arxiv-paper-watcher-digest/scripts/arxiv_paper_watcher_digest.py
 ```
 
 What it does:
@@ -100,7 +100,11 @@ Use the paper-digest skill on /absolute/path/to/paper.pdf and produce a structur
 ├── .codex/
 │   └── skills/
 │       ├── arxiv-paper-watcher-digest/
-│       │   └── SKILL.md
+│       │   ├── SKILL.md
+│       │   ├── scripts/
+│       │   │   └── arxiv_paper_watcher_digest.py
+│       │   └── references/
+│       │       └── topics-example.yaml
 │       ├── notes-to-paper-section/
 │       │   ├── SKILL.md
 │       │   └── references/
@@ -117,8 +121,6 @@ Use the paper-digest skill on /absolute/path/to/paper.pdf and produce a structur
 ├── config/
 │   └── topics.yaml
 ├── reports/
-├── scripts/
-│   └── arxiv_paper_watcher_digest.py
 ├── state/
 ├── .gitignore
 ├── requirements.txt
@@ -154,6 +156,7 @@ OPENAI_API_KEY=your_api_key_here
 The arXiv watcher is the only current skill in this repo that requires a Python runtime and external APIs.
 
 Research interests live in `config/topics.yaml`.
+An example config is bundled at `.codex/skills/arxiv-paper-watcher-digest/references/topics-example.yaml`.
 
 Example topic:
 
@@ -209,7 +212,7 @@ Each topic supports:
 Run:
 
 ```bash
-python3 scripts/arxiv_paper_watcher_digest.py
+python3 .codex/skills/arxiv-paper-watcher-digest/scripts/arxiv_paper_watcher_digest.py
 ```
 
 Successful output looks like:
@@ -294,6 +297,6 @@ It uses the model for:
 2. topic-aware relevance filtering
 3. paper summarization
 
-To use a different OpenAI-compatible endpoint or model, update the OpenAI client initialization and `MODEL_NAME` in scripts/arxiv_paper_watcher_digest.py.
+To use a different OpenAI-compatible endpoint or model, update the OpenAI client initialization and `MODEL_NAME` in [.codex/skills/arxiv-paper-watcher-digest/scripts/arxiv_paper_watcher_digest.py](/Users/hx/Desktop/PostDoc/THUNLP/Codes/GitHub-versions/academic-research-skills/.codex/skills/arxiv-paper-watcher-digest/scripts/arxiv_paper_watcher_digest.py).
 
 The `notes-to-paper-section` and `paper-digest` skills are prompt-and-reference based. They do not currently rely on a dedicated Python runtime in this repo, but they may still depend on Codex being able to read local files or access a paper URL when invoked.
