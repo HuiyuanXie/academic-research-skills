@@ -2,10 +2,11 @@
 
 A small Codex-ready repository of academic research skills.
 
-At the moment, the repo contains two local Codex skills:
+At the moment, the repo contains three local Codex skills:
 
 - `arxiv-paper-watcher-digest`: monitors arXiv for configurable research topics and generates Markdown/CSV digests
 - `notes-to-paper-section`: reads large research notes, critiques their technical and logical quality, and drafts an ACL-style paper section
+- `paper-digest`: reads AI papers from a PDF or URL and produces structured Markdown digests tailored to benchmark, modelling, survey, or position papers
 
 The repo is meant to be practical rather than framework-heavy: each skill lives under `.codex/skills/`, and supporting scripts or configuration live alongside it in the repository.
 
@@ -66,6 +67,32 @@ Typical Codex prompt:
 Use the notes-to-paper-section skill on /absolute/path/to/notes.md. First critique the notes, then draft an ACL-style Method section.
 ```
 
+### 3. Paper Digest
+
+Skill files:
+
+```text
+.codex/skills/paper-digest/SKILL.md
+.codex/skills/paper-digest/references/paper-types.md
+.codex/skills/paper-digest/references/extraction-rules.md
+.codex/skills/paper-digest/references/output-schema.md
+```
+
+What it does:
+
+- reads AI papers from either a local PDF path or a paper URL
+- identifies the paper type before drafting the digest
+- produces structured Markdown digests grounded in the paper text
+- adapts output for benchmark/dataset, modelling, survey, and position papers
+- extracts author-stated contributions directly when possible
+- reproduces readable tables in Markdown and otherwise describes figures faithfully
+
+Typical Codex prompt:
+
+```text
+Use the paper-digest skill on /absolute/path/to/paper.pdf and produce a structured digest.
+```
+
 ## Repository Layout
 
 ```text
@@ -74,11 +101,19 @@ Use the notes-to-paper-section skill on /absolute/path/to/notes.md. First critiq
 │   └── skills/
 │       ├── arxiv-paper-watcher-digest/
 │       │   └── SKILL.md
-│       └── notes-to-paper-section/
+│       ├── notes-to-paper-section/
+│       │   ├── SKILL.md
+│       │   └── references/
+│       │       ├── acl-style.md
+│       │       └── critique-checklist.md
+│       └── paper-digest/
 │           ├── SKILL.md
+│           ├── agents/
+│           │   └── openai.yaml
 │           └── references/
-│               ├── acl-style.md
-│               └── critique-checklist.md
+│               ├── extraction-rules.md
+│               ├── output-schema.md
+│               └── paper-types.md
 ├── config/
 │   └── topics.yaml
 ├── reports/
@@ -224,6 +259,26 @@ The main skill file explicitly routes Codex to:
 
 This separation keeps the critique pass and the writing pass distinct, which is important for note-to-paper conversion.
 
+## Paper-Digest Workflow
+
+The `paper-digest` skill is also prompt-and-reference driven. It is designed for paper reading rather than note rewriting.
+
+Its workflow is:
+
+1. read the paper from a PDF path or URL
+2. identify the paper title, structure, main contribution, and evidence
+3. classify the paper as benchmark/dataset, modelling, survey, or position
+4. extract paper-grounded content using the bundled extraction rules
+5. produce a structured Markdown digest using the paper-type-specific schema
+
+The main skill file explicitly routes Codex to:
+
+- `references/paper-types.md` for classification
+- `references/extraction-rules.md` for grounded extraction
+- `references/output-schema.md` for final digest structure
+
+This keeps paper-type routing, extraction behavior, and output formatting separate and easier to maintain.
+
 ## Model Usage
 
 The arXiv watcher currently uses:
@@ -240,3 +295,5 @@ It uses the model for:
 3. paper summarization
 
 To use a different OpenAI-compatible endpoint or model, update the OpenAI client initialization and `MODEL_NAME` in scripts/arxiv_paper_watcher_digest.py.
+
+The `notes-to-paper-section` and `paper-digest` skills are prompt-and-reference based. They do not currently rely on a dedicated Python runtime in this repo, but they may still depend on Codex being able to read local files or access a paper URL when invoked.

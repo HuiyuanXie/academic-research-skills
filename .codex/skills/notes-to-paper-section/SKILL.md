@@ -1,6 +1,6 @@
 ---
 name: notes-to-paper-section
-description: Read large research notes, including multilingual notes, analyze their logic and technical content, critique mistakes or gaps, and draft an ACL-style academic paper section.
+description: Read large research notes, including multilingual notes, analyze their logic and technical content, critique mistakes or gaps, and draft an ACL-style academic paper section. Use when the user wants to turn notes into a paper section, critique research notes before writing, convert multilingual notes into academic prose, draft an ACL-style method or related-work section, or identify missing information and logical problems before paper writing.
 ---
 
 # Notes to Paper Section

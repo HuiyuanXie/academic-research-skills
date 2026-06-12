@@ -1,8 +1,13 @@
+---
+name: arxiv-paper-watcher-digest
+description: Monitor arXiv for new papers in the user's research areas and generate a digest of relevant results since the last run. Use when the user wants to find new related papers on arXiv, get an arXiv paper feed, track or monitor arXiv for a topic, receive a digest of recent arXiv papers, or discover newly published papers relevant to configured research interests without manually searching or skimming.
+---
+
 # arXiv Paper Watcher and Digest Skill
 
 ## Purpose
 
-Run an on-demand arXiv paper watcher for the user's research interests. The workflow should retrieve new arXiv papers from the last recorded run to the current date, filter for true relevance, summarize relevant papers, and save a digest report.
+Monitor arXiv for new papers in the user's research areas and generate a digest of relevant results since the last run. The workflow should retrieve new arXiv papers from the last recorded run to the current date, filter for true relevance, summarize relevant papers, and save a digest report.
 
 ## Repository layout
 

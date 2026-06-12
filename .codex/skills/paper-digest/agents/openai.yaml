@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Digest"
+  short_description: "Digest AI papers into structured markdown summaries."
+  default_prompt: "Use the paper-digest skill to analyze a paper and produce a structured digest."
