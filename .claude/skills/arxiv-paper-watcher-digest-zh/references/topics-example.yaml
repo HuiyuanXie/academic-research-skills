@@ -1,0 +1,39 @@
+profile_name: "研究论文监控"
+
+default_categories:
+  - cs.CL
+  - cs.AI
+  - cs.IR
+  - cs.LG
+  - cs.CY
+  - stat.ML
+
+topics:
+  - id: legal_ai
+    name: "法律 AI 与法律 NLP"
+    description: >
+      关于将 AI、NLP、大语言模型、检索、推理或智能体应用于法律任务的论文。
+    seed_keywords:
+      - legal AI
+      - legal NLP
+      - AI and law
+      - computational law
+      - legal reasoning
+      - legal datasets and benchmarks
+    include:
+      - 法律推理
+      - 面向法律任务的强化学习
+      - 法律数据集或基准
+      - 法律信息抽取
+      - 面向法律任务的智能体或多智能体系统
+      - 法庭辩论模拟
+      - 法律论证挖掘
+      - 类案检索
+      - 判例分析
+      - 争议焦点分析或争点分析
+      - 使用 AI 进行监管、合规或治理
+      - 大语言模型在法律任务中的应用
+    exclude:
+      - 物理定律
+      - 科学定律
+      - 没有法律应用的通用 AI 论文
